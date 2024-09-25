@@ -1,9 +1,10 @@
+from django.db.models import QuerySet
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
-from todo_list.forms import TaskCreateUpdateForm
+from todo_list.forms import TaskCreateUpdateForm, SearchTaskForm
 from todo_list.models import Task, Tag
 
 
@@ -13,6 +14,25 @@ class TaskListView(generic.ListView):
     queryset = Task.objects.prefetch_related(
         "tags"
     ).order_by("is_done", "-created_at")
+
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict:
+        context = super().get_context_data(object_list=object_list, **kwargs)
+
+        content = self.request.GET.get("content", "")
+
+        context["search"] = SearchTaskForm(initial={"content": content})
+        return context
+
+    def get_queryset(self) -> QuerySet[Task]:
+        queryset = super().get_queryset()
+        search = SearchTaskForm(self.request.GET)
+
+        if search.is_valid():
+            queryset = queryset.filter(
+                content__icontains=search.cleaned_data["content"]
+            )
+
+        return queryset
 
 
 class TaskCompletionToggleView(generic.View):

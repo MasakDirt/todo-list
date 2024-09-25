@@ -30,3 +30,18 @@ class SearchTaskForm(forms.Form):
             }
         )
     )
+
+
+def tag_choices() -> list:
+    return [("", "Select tag")] + [
+        (tag.name, tag.name.capitalize())
+        for tag in Tag.objects.all()
+    ]
+
+
+class FilterTaskForm(forms.Form):
+    tag = forms.ChoiceField(
+        choices=tag_choices(),
+        required=False,
+        label=""
+    )

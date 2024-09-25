@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_filters %}
+{% load crispy_forms_filters %}
 {% load tags_name %}
 
 {% block content %}
@@ -7,15 +8,31 @@
     <div class="text-center mb-5">
       <h1 class="display-4 font-weight-bold">Todo List</h1>
       <p class="lead">Stay organized and track your tasks</p>
-      <a class="btn btn-lg btn-primary shadow-lg"
-         href="{% url 'todo_list:task-create' %}">
-        Add Task
+      <a class="btn btn-lg btn-primary shadow-lg mb-4" href="{% url 'todo_list:task-create' %}">
+        <i class="fas fa-plus-circle"></i> Add Task
       </a>
       
-      <form action="" method="get" class="form-inline">
-        {{ search|crispy }}
-        <input class="btn btn-secondary" type="submit" value="🔎">
-      </form>
+      <div class="row justify-content-center mb-5">
+      <div class="col-md-8">
+        <div class="card p-4 shadow-sm">
+          <form action="" method="get">
+            <div class="mb-3">
+              {{ search|crispy }}
+            </div>
+
+            <div class="mb-4">
+              <label for="filterTasks" class="form-label">Filter Tasks</label>
+              {{ filter|crispy }}
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-secondary btn-block" type="submit">
+                <i class="fas fa-search"></i> Search
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
     {% for task in task_list %}

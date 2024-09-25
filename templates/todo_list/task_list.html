@@ -68,6 +68,9 @@
 
         </div>
       </div>
+    {% empty %}
+      <p class="text-center">No tasks available. <a
+          href="{% url 'todo_list:task-create' %}">Add one here!</a></p>
     {% endfor %}
   </div>
 

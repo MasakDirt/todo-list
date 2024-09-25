@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container text-center my-5">
+    <h1 class="display-5 text-danger mb-4">
+      <i class="fas fa-exclamation-triangle"></i> Are you sure?
+    </h1>
+    <p class="lead">You are about to delete the task:</p>
+    <h2 class="font-weight-bold text-primary mb-4">"{{ task.content }}"</h2>
+
+    <form action="" method="post" class="d-inline-block mb-3">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-lg btn-danger shadow-lg">
+        <i class="fas fa-trash-alt"></i> Yes, Delete
+      </button>
+    </form>
+
+    <div class="mt-3">
+      <a class="btn btn-lg btn-secondary shadow"
+         href="{% url 'todo_list:task-list' %}">
+        <i class="fas fa-arrow-left"></i> No, Go Back
+      </a>
+    </div>
+  </div>
+{% endblock %}

@@ -16,3 +16,17 @@ class TaskCreateUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ("content", "deadline", "tags")
+
+
+class SearchTaskForm(forms.Form):
+    content = forms.CharField(
+        required=False,
+        max_length=100,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search by content",
+                "class": "form-control"
+            }
+        )
+    )

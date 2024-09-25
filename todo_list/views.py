@@ -42,3 +42,25 @@ class TaskUpdateView(generic.UpdateView):
 class TaskDeleteView(generic.DeleteView):
     model = Task
     success_url = reverse_lazy("todo_list:task-list")
+
+
+class TagListView(generic.ListView):
+    model = Tag
+    paginate_by = 5
+
+
+class TagCreateView(generic.CreateView):
+    model = Tag
+    fields = ("name", )
+    success_url = reverse_lazy("todo_list:tag-list")
+
+
+class TagUpdateView(generic.UpdateView):
+    model = Tag
+    fields = ("name", )
+    success_url = reverse_lazy("todo_list:tag-list")
+
+
+class TagDeleteView(generic.DeleteView):
+    model = Tag
+    success_url = reverse_lazy("todo_list:tag-list")

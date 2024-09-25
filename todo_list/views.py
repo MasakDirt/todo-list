@@ -4,7 +4,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
-from todo_list.forms import TaskCreateUpdateForm, SearchTaskForm
+from todo_list.forms import (
+    TaskCreateUpdateForm,
+    SearchTaskForm,
+    FilterTaskForm
+)
 from todo_list.models import Task, Tag
 
 
@@ -19,17 +23,25 @@ class TaskListView(generic.ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
 
         content = self.request.GET.get("content", "")
+        tag = self.request.GET.get("tag", "")
 
         context["search"] = SearchTaskForm(initial={"content": content})
+        context["filter"] = FilterTaskForm(initial={"tag": tag})
         return context
 
     def get_queryset(self) -> QuerySet[Task]:
         queryset = super().get_queryset()
         search = SearchTaskForm(self.request.GET)
+        filter = FilterTaskForm(self.request.GET)
 
-        if search.is_valid():
+        if search.is_valid() and search.cleaned_data["content"]:
             queryset = queryset.filter(
                 content__icontains=search.cleaned_data["content"]
+            )
+
+        if filter.is_valid() and filter.cleaned_data["tag"]:
+            queryset = queryset.filter(
+                tags__name__icontains=filter.cleaned_data["tag"]
             )
 
         return queryset

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Tag(models.Model):
@@ -16,7 +17,12 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag, related_name="tasks")
 
     class Meta:
-        ordering = ("-deadline", )
+        ordering = ("deadline", )
+
+    @property
+    def is_delay(self) -> bool:
+        now = timezone.now()
+        return not self.is_done and self.deadline < now
 
     def __str__(self) -> str:
         return f"{self.content} - {self.deadline}"

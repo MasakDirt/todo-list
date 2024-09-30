@@ -18,7 +18,7 @@ app_name = "todo_list"
 urlpatterns = [
     path("", TaskListView.as_view(), name="task-list"),
     path(
-        "tasks/create",
+        "tasks/create/",
         TaskCreateView.as_view(),
         name="task-create"
     ),

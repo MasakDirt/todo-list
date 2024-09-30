@@ -8,93 +8,96 @@
     <div class="text-center mb-5">
       <h1 class="display-4 font-weight-bold">Todo List</h1>
       <p class="lead">Stay organized and track your tasks</p>
-      <a class="btn btn-lg btn-primary shadow-lg mb-4" href="{% url 'todo_list:task-create' %}">
+      <a class="btn btn-lg btn-primary shadow-lg mb-4"
+         href="{% url 'todo_list:task-create' %}">
         <i class="fas fa-plus-circle"></i> Add Task
       </a>
-      
+
       <div class="row justify-content-center mb-5">
-      <div class="col-md-8">
-        <div class="card p-4 shadow-sm">
-          <form action="" method="get">
-            <div class="mb-3">
-              {{ search|crispy }}
-            </div>
+        <div class="col-md-8">
+          <div class="card p-4 shadow-sm">
+            <form action="" method="get">
+              <div class="mb-3">
+                {{ search|crispy }}
+              </div>
 
-            <div class="mb-4">
-              <label for="filterTasks" class="form-label">Filter Tasks</label>
-              {{ filter|crispy }}
-            </div>
+              <div class="mb-4">
+                <label for="filterTasks" class="form-label">Filter
+                  Tasks</label>
+                {{ filter|crispy }}
+              </div>
 
-            <div class="d-grid">
-              <button class="btn btn-secondary btn-block" type="submit">
-                <i class="fas fa-search"></i> Search
-              </button>
-            </div>
-          </form>
+              <div class="d-grid">
+                <button class="btn btn-secondary btn-block" type="submit">
+                  <i class="fas fa-search"></i> Search
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
 
-    {% for task in task_list %}
-      <div
-          class="card shadow-sm mb-4 {% if task.is_delay and not task.is_done %}border-danger bg-light{% endif %} hover-zoom">
-        <div class="card-body">
-          <h3 class="card-title mb-3">{{ task.content }}</h3>
+      {% for task in task_list %}
+        <div
+            class="card shadow-sm mb-4 {% if task.is_delay and not task.is_done %}border-danger bg-light{% endif %} hover-zoom">
+          <div class="card-body">
+            <h3 class="card-title mb-3">{{ task.content }}</h3>
 
-          <div class="d-flex justify-content-between align-items-start mb-4">
-            <div>
-              <p class="mb-1">
-                <strong>Created:</strong> {{ task.created_at|date:"M d, Y H:i" }}
-                <br>
-                <strong>Deadline:</strong> {{ task.deadline|date:"M d, Y H:i" }}
-              </p>
-              <p class="mb-1 text-muted">
-                <strong>Tags:</strong> {{ task.tags.all|tags_name }}
-              </p>
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <p class="mb-1">
+                  <strong>Created:</strong> {{ task.created_at|date:"M d, Y H:i" }}
+                  <br>
+                  <strong>Deadline:</strong> {{ task.deadline|date:"M d, Y H:i" }}
+                </p>
+                <p class="mb-1 text-muted">
+                  <strong>Tags:</strong> {{ task.tags.all|tags_name }}
+                </p>
+              </div>
+
+              <div class="btn-group">
+                <a class="btn btn-info btn-sm"
+                   href="{% url 'todo_list:task-update' task.pk %}">
+                  <i class="fas fa-edit"></i> Update
+                </a>
+                <a class="btn btn-danger btn-sm"
+                   href="{% url 'todo_list:task-delete' task.pk %}">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </a>
+              </div>
             </div>
 
-            <div class="btn-group">
-              <a class="btn btn-info btn-sm"
-                 href="{% url 'todo_list:task-update' task.pk %}">
-                <i class="fas fa-edit"></i> Update
-              </a>
-              <a class="btn btn-danger btn-sm"
-                 href="{% url 'todo_list:task-delete' task.pk %}">
-                <i class="fas fa-trash-alt"></i> Delete
-              </a>
-            </div>
-          </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <form method="post"
+                    action="{% url 'todo_list:task-toggle' task.pk %}">
+                {% csrf_token %}
+                {% if task.is_done %}
+                  <input type="hidden" name="is_complete" value="undo">
+                  <button type="submit" class="btn btn-outline-secondary">
+                    <i class="fas fa-undo"></i> Undo
+                  </button>
+                {% else %}
+                  <input type="hidden" name="is_complete" value="done">
+                  <button type="submit" class="btn btn-outline-success">
+                    <i class="fas fa-check-circle"></i> Complete
+                  </button>
+                {% endif %}
+              </form>
 
-          <div class="d-flex justify-content-between align-items-center">
-            <form method="post"
-                  action="{% url 'todo_list:task-toggle' task.pk %}">
-              {% csrf_token %}
-              {% if task.is_done %}
-                <input type="hidden" name="is_complete" value="undo">
-                <button type="submit" class="btn btn-outline-secondary">
-                  <i class="fas fa-undo"></i> Undo
-                </button>
-              {% else %}
-                <input type="hidden" name="is_complete" value="done">
-                <button type="submit" class="btn btn-outline-success">
-                  <i class="fas fa-check-circle"></i> Complete
-                </button>
-              {% endif %}
-            </form>
-
-            <span
-                class="badge {% if task.is_done %}bg-success{% elif task.is_delay %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+              <span
+                  class="badge {% if task.is_done %}bg-success{% elif task.is_delay %}bg-danger{% else %}bg-warning text-dark{% endif %}">
         {% if task.is_done %}Done{% elif task.is_delay %}Delayed{% else %}Not
           Done{% endif %}
       </span>
-          </div>
+            </div>
 
+          </div>
         </div>
-      </div>
-    {% empty %}
-      <p class="text-center">No tasks available. <a
-          href="{% url 'todo_list:task-create' %}">Add one here!</a></p>
-    {% endfor %}
+      {% empty %}
+        <p class="text-center">No tasks available. <a
+            href="{% url 'todo_list:task-create' %}">Add one here!</a></p>
+      {% endfor %}
+    </div>
   </div>
 
   <style>

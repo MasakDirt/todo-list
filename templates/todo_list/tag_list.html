@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+  <div class="text-center mb-5">
+    <h1 class="display-4 font-weight-bold">Tags</h1>
+    <p class="lead">Stay organized and track your tasks with tags</p>
+    <a class="btn btn-lg btn-primary shadow-lg"
+       href="{% url 'todo_list:tag-create' %}">
+      Add Tag
+    </a>
+  </div>
+
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Update</th>
+      <th scope="col">Delete</th>
+    </tr>
+
+    </thead>
+    <tbody>
+    {% for tag in tag_list %}
+      <tr>
+        <td><strong>{{ tag.name }}</strong></td>
+        <td><a href="{% url 'todo_list:tag-update' tag.pk %}" class="btn btn-info">Update</a></td>
+        <td><a href="{% url 'todo_list:tag-delete' tag.pk %}" class="btn btn-danger">Delete</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
